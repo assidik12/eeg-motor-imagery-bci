@@ -33,7 +33,7 @@ eeg-motor-imagery-bci/
 Untuk menjalankan proyek ini di lingkungan lokal Anda, ikuti langkah-langkah berikut:
 
 1. **Clone repositori ini:**  
-   git clone \[https://github.com/NAMA\_USER\_ANDA/NAMA\_REPO\_ANDA.git\](https://github.com/NAMA\_USER\_ANDA/NAMA\_REPO\_ANDA.git)  
+   git clone [https://github.com/assidik12/eeg-motor-imagery-bci](https://github.com/assidik12/eeg-motor-imagery-bci.git)  
    cd NAMA_REPO_ANDA
 
 2. **Buat sebuah _virtual environment_ (sangat direkomendasikan):**  
