@@ -1,0 +1,13 @@
+Byte-compiled / optimized / DLL files
+pycache/
+*.py[cod]
+*$py.class
+
+Jupyter Notebook Checkpoints
+.ipynb_checkpoints
+
+MNE data folder (agar tidak meng-upload data mentah yang besar)
+mne_data/
+
+Environment
+.env
