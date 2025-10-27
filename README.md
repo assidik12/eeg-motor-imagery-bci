@@ -1,5 +1,8 @@
 # **Klasifikasi Sinyal EEG Motor Imagery Lintas-Subjek dengan EEGNet**
 
+> **Apa itu proyek ini?**  
+> Proyek ini adalah sistem **Brain-Computer Interface (BCI)** yang menggunakan deep learning untuk membaca sinyal otak (EEG) dan mengenali niat gerakan tangan (kiri/kanan) tanpa gerakan fisik. Sistem ini memanfaatkan arsitektur **EEGNet** untuk mengklasifikasikan sinyal motor imagery dari 20 subjek berbeda.
+
 ## **📖 Ringkasan Proyek**
 
 Proyek ini adalah implementasi _end-to-end_ dari sebuah Brain-Computer Interface (BCI) yang mampu mengklasifikasikan niat gerakan tangan (kiri vs. kanan) dari data mentah EEG. Model ini menggunakan arsitektur _Deep Learning_ **EEGNet** dan dilatih pada dataset besar yang terdiri dari **20 subjek** untuk memastikan kemampuannya dalam melakukan generalisasi pada data dari pengguna baru.
