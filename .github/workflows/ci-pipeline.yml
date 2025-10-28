@@ -1,0 +1,48 @@
+# Nama workflow, akan muncul di tab "Actions" GitHub
+name: CI - Docker Image Build
+
+# Pemicu (trigger) workflow
+on:
+  # Jalankan saat ada push ke branch 'main'
+  push:
+    branches: [main]
+  # Jalankan juga saat ada Pull Request yang menargetkan 'main'
+  pull_request:
+    branches: [main]
+
+# Daftar "pekerjaan" (jobs) yang akan dijalankan
+jobs:
+  # Kita definisikan satu pekerjaan bernama 'build-docker-image'
+  build-docker-image:
+    # Pilih sistem operasi untuk server (runner) kita
+    runs-on: ubuntu-latest
+
+    # Langkah-langkah (steps) yang akan dieksekusi
+    steps:
+      # Langkah 1: Checkout (mengunduh) kode dari repositori Anda
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Langkah 2: Menyiapkan Docker Buildx (best practice)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # --- Langkah PENTING untuk MLOps ---
+      # Karena .gitignore kita MENGABAIKAN folder 'models/',
+      # repo GitHub kita tidak memiliki model .h5.
+      # Langkah 'COPY ./models' di Dockerfile akan GAGAL.
+      # Triknya: kita buat file model "palsu" (dummy)
+      # agar build CI bisa menguji sisa Dockerfile (seperti pip install).
+      - name: Create dummy model file for CI build
+        run: |
+          mkdir -p models
+          echo "This is a dummy file for CI" > models/eegnet_model.h5
+
+      # Langkah 3: Menjalankan build menggunakan docker-compose
+      # Ini adalah tes utama kita. Jika gagal, seluruh workflow gagal.
+      - name: Build Docker image with Docker Compose
+        run: docker-compose build
+
+      # (Opsional) Anda bisa menambahkan langkah 'docker-compose up -d'
+      # dan 'curl' untuk melakukan "smoke test" jika server menyala,
+      # tapi untuk saat ini, 'build' saja sudah merupakan CI yang bagus.
