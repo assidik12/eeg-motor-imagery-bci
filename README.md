@@ -11,50 +11,158 @@ Tujuan utama proyek ini adalah untuk membangun sebuah model BCI lintas-subjek (_
 - **Pipeline Lengkap:** Dari _preprocessing_ data EEG mentah menggunakan **MNE-Python** hingga pelatihan model _Deep Learning_ dengan **TensorFlow/Keras**.
 - **Arsitektur Canggih:** Mengimplementasikan **EEGNet**, sebuah arsitektur CNN yang dirancang khusus untuk data EEG, dari nol.
 - **Validasi Lintas-Subjek:** Model dilatih pada data dari 20 subjek dan diuji pada data dari subjek yang sepenuhnya baru untuk membuktikan kemampuan generalisasinya.
-- **Simulasi Prediksi:** Termasuk skrip (simulate_prediction.py) untuk mendemonstrasikan bagaimana model yang telah dilatih dapat digunakan untuk membuat prediksi pada satu sampel data EEG baru.
+- **REST API Server:** API FastAPI untuk melakukan prediksi real-time melalui HTTP endpoint.
+- **Docker Support:** Containerized deployment menggunakan Docker untuk portabilitas dan kemudahan deployment.
+- **Simulasi Prediksi:** Termasuk skrip client untuk mendemonstrasikan bagaimana model yang telah dilatih dapat digunakan untuk membuat prediksi pada data EEG baru.
 
 ## **📂 Struktur Repositori**
 
 ```
 eeg-motor-imagery-bci/
 │
-├── README.md                 \# Dokumentasi ini
-├── BCI\_Motor\_Imagery\_EEGNet.ipynb \# Notebook utama berisi seluruh alur kerja
-├── eegnet\_model\_final.h5     \# Model Keras yang sudah terlatih
-├── training\_history.pkl      \# Riwayat akurasi & loss selama pelatihan
-├── simulate\_prediction.py    \# Skrip untuk menjalankan simulasi prediksi
-├── results/
-│   └── training\_plot.png       \# Gambar hasil plot pelatihan
-└── requirements.txt          \# Daftar library yang dibutuhkan
+├── README.md                     # Dokumentasi ini
+├── requirements.txt              # Daftar library yang dibutuhkan
+├── Dockerfile                    # Docker configuration untuk containerization
+├── .dockerignore                 # File yang diabaikan saat build Docker image
+│
+├── src/                          # Source code utama
+│   ├── config.py                 # Konfigurasi global (parameter EEG, model, dll)
+│   ├── download_data.py          # Script untuk mengunduh dataset BCI Competition IV 2a
+│   ├── data_processing.py        # Preprocessing data EEG dengan MNE
+│   ├── model.py                  # Implementasi arsitektur EEGNet
+│   ├── train.py                  # Script pelatihan model
+│   ├── api.py                    # FastAPI REST API server untuk prediksi
+│   └── client.py                 # Client script untuk testing API
+│
+├── data/                         # Dataset EEG (diunduh otomatis)
+│   └── A01T.gdf, A01E.gdf, ...   # File GDF dari BCI Competition
+│
+├── models/                       # Model yang sudah terlatih
+│   └── eegnet_model_final.h5     # Model Keras final
+│
+└── results/                      # Hasil pelatihan
+    ├── training_history.pkl      # Riwayat akurasi & loss
+    └── training_plot.png         # Visualisasi hasil pelatihan
 ```
 
 ## **🛠️ Setup & Instalasi**
 
+### **Opsi 1: Instalasi Lokal**
+
 Untuk menjalankan proyek ini di lingkungan lokal Anda, ikuti langkah-langkah berikut:
 
-1. **Clone repositori ini:**  
-   git clone [https://github.com/assidik12/eeg-motor-imagery-bci](https://github.com/assidik12/eeg-motor-imagery-bci.git)  
-   cd NAMA_REPO_ANDA
+1. **Clone repositori ini:**
 
-2. **Buat sebuah _virtual environment_ (sangat direkomendasikan):**  
-   python \-m venv venv  
-   source venv/bin/activate \# Di Windows, gunakan \`venv\\Scripts\\activate\`
+   ```bash
+   git clone https://github.com/assidik12/eeg-motor-imagery-bci.git
+   cd eeg-motor-imagery-bci
+   ```
 
-3. **Instal semua _library_ yang dibutuhkan:**  
-   pip install \-r requirements.txt
+2. **Buat virtual environment:**
+
+   ```bash
+   python -m venv .venv
+   # Windows
+   .venv\Scripts\activate
+   # Linux/Mac
+   source .venv/bin/activate
+   ```
+
+3. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+### **Opsi 2: Docker (Recommended untuk Production)**
+
+Untuk deployment yang lebih mudah dan konsisten, gunakan Docker:
+
+1. **Build Docker image:**
+
+   ```bash
+   docker build -t eeg-bci-api .
+   ```
+
+2. **Jalankan container:**
+
+   ```bash
+   docker run -d -p 8000:8000 --name eeg-bci eeg-bci-api
+   ```
+
+3. **Akses API:**
+
+   - API akan berjalan di: `http://localhost:8000`
+   - Dokumentasi interaktif: `http://localhost:8000/docs`
+
+4. **Stop container:**
+   ```bash
+   docker stop eeg-bci
+   docker rm eeg-bci
+   ```
 
 ## **🚀 Cara Menjalankan**
 
-1. **Menjalankan Alur Kerja Lengkap (Pelatihan):**
-   - Buka dan jalankan sel-sel di dalam notebook BCI_Motor_Imagery_EEGNet.ipynb secara berurutan.
-   - Notebook ini akan menangani pengunduhan data, _preprocessing_, pelatihan model, dan penyimpanan hasil secara otomatis. _Catatan: Proses pelatihan mungkin memakan waktu cukup lama._
-2. **Menjalankan Simulasi Prediksi (Setelah Model Dilatih):**
+### **A. Training Model**
 
-   - Setelah file eegnet_model_final.h5 berhasil dibuat, jalankan skrip simulasi dari terminal:
+1. **Download dataset:**
 
-   python simulate_prediction.py
+   ```bash
+   python src/download_data.py
+   ```
 
-   - Skrip ini akan memuat model, mengambil data dari subjek baru (yang tidak ada dalam set pelatihan), dan membuat prediksi tunggal.
+2. **Preprocessing data:**
+
+   ```bash
+   python src/data_processing.py
+   ```
+
+3. **Train model:**
+   ```bash
+   python src/train.py
+   ```
+   _Catatan: Proses pelatihan mungkin memakan waktu cukup lama (beberapa jam tergantung hardware)._
+
+### **B. Menjalankan API Server**
+
+#### **Opsi 1: Local**
+
+```bash
+# Jalankan dengan uvicorn
+uvicorn src.api:app --reload --host 0.0.0.0 --port 8000
+
+# Atau jalankan langsung
+python src/api.py
+```
+
+#### **Opsi 2: Docker**
+
+```bash
+# Pastikan Docker sudah terinstall
+docker build -t eeg-bci-api .
+docker run -d -p 8000:8000 --name eeg-bci eeg-bci-api
+```
+
+#### **Akses API:**
+
+- **Base URL:** `http://localhost:8000`
+- **Docs (Swagger UI):** `http://localhost:8000/docs`
+- **Health Check:** `http://localhost:8000/health`
+
+### **C. Testing Prediksi**
+
+Setelah API server berjalan, test dengan client script:
+
+```bash
+python src/client.py
+```
+
+Atau test manual dengan curl:
+
+```bash
+curl -X POST "http://localhost:8000/predict" \
+  -H "Content-Type: application/json" \
+  -d @sample_data.json
+```
 
 ## **📊 Hasil**
 

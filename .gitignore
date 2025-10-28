@@ -1,5 +1,5 @@
 Byte-compiled / optimized / DLL files
-pycache/
+src/__pycache__/
 *.py[cod]
 *$py.class
 
@@ -11,3 +11,4 @@ mne_data/
 
 Environment
 .env
+.venv/

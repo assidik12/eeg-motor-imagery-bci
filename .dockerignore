@@ -1,0 +1,25 @@
+# Abaikan virtual environment lokal
+
+.venv
+venv
+*.venv
+
+# Abaikan cache Python
+
+pycache/
+*.pyc
+
+# Abaikan folder data mentah.
+
+# Container INFERENSI tidak butuh data TRAINING,
+
+# hanya butuh model.h5. Ini membuat image kita kecil.
+
+data/
+
+# Abaikan pengaturan Git dan IDE
+
+.git/
+.gitignore
+.vscode/
+README.md

@@ -2,7 +2,7 @@
 
 # --- Konfigurasi Data ---
 # Path ke direktori data mentah .gdf
-DATA_DIR = './data/' 
+DATA_DIR = '../data/' 
 # Subjek yang akan diproses (nantinya bisa di-loop)
 SUBJECTS_TO_PROCESS = [1] 
 # Frekuensi sampling data (di notebook Anda adalah 250 Hz)
@@ -47,5 +47,5 @@ RANDOM_SEED = 42
 
 # --- Path Output ---
 # Tempat menyimpan model yang sudah dilatih
-MODEL_OUTPUT_DIR = './models/'
+MODEL_OUTPUT_DIR = '../models/'
 MODEL_FILENAME = 'eegnet_model.h5'
