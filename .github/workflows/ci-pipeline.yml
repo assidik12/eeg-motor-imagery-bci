@@ -41,7 +41,7 @@ jobs:
       # Langkah 3: Menjalankan build menggunakan docker-compose
       # Ini adalah tes utama kita. Jika gagal, seluruh workflow gagal.
       - name: Build Docker image with Docker Compose
-        run: docker-compose build
+        run: docker compose build
 
       # (Opsional) Anda bisa menambahkan langkah 'docker-compose up -d'
       # dan 'curl' untuk melakukan "smoke test" jika server menyala,
