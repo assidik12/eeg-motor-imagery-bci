@@ -2,8 +2,8 @@ version: "3.8"
 
 services:
   api:
+    image: ghcr.io/assidik12/eeg-motor-imagery-bci:${DOCKER_IMAGE_TAG:-latest}
     build: .
-    image: eeg-api:latest
     ports:
       - "8000:8000"
 
